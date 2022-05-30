@@ -1,5 +1,4 @@
 ﻿using Beenius;
-using System;
 
 
 namespace Beenius_Tester
@@ -9,7 +8,7 @@ namespace Beenius_Tester
         static void Main(string[] args)
         {
             GeniusClient client = new GeniusClient();
-            client.getLyrics("$uicideboy$", "broke(n)", string.Empty);
+            client.getLyrics("Denzel Curry & 6LACK & Rico Nasty & JID & Jasiah & Powers Pleasant & Kitty Ca$h", "Ain't No Way", string.Empty);
         }
     }
 }

@@ -1,11 +1,6 @@
 ﻿using Beenius;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using static MusicBeePlugin.Plugin;
 
 namespace MusicBeePlugin
 {
@@ -23,12 +18,12 @@ namespace MusicBeePlugin
             info.PluginInfoVersion = PluginInfoVersion;
             info.Name = "Beenius";
             info.Description = "Genius support for MusicBee";
-            info.Author = "thebeginning";
+            info.Author = "slonopot";
             info.TargetApplication = "MusicBee";
             info.Type = PluginType.LyricsRetrieval;
             info.VersionMajor = 0;
             info.VersionMinor = 0;
-            info.Revision = 1;
+            info.Revision = 2;
             info.MinInterfaceVersion = 20;
             info.MinApiRevision = 25;
             info.ReceiveNotifications = ReceiveNotificationFlags.StartupOnly;

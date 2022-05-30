@@ -1,27 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using Topten.JsonKit;
 
 namespace Beenius
 {
     public class GeniusClient
     {
+        public static string configName = "./Plugins/beenius.conf";
+
         private HttpClient client = new HttpClient();
 
         private string GeniusAnonymousAndroidToken = "ZTejoT_ojOEasIkT9WrMBhBQOz6eYKK5QULCMECmOhvwqjRZ6WbpamFe3geHnvp3";
         private string ApiURL = "https://api.genius.com";
         private int AllowedDistance = 5; //a number of edits needed to get from one title to another
+        private char[] Delimiters = {}; //delimiters to remove additional authors from the string
         public GeniusClient()
         {
             client.DefaultRequestHeaders.Remove("User-Agent");
             client.DefaultRequestHeaders.Add("User-Agent", "okhttp/4.9.1");
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + GeniusAnonymousAndroidToken);
+
+            if (File.Exists(configName))
+            {
+                string data = File.ReadAllText(configName);
+                dynamic config = Json.Parse<object>(data);
+                AllowedDistance = (int)config.allowedDistance;
+                Delimiters = ((List<object>)config.delimiters).Select(x => char.Parse(x.ToString())).ToArray();
+            }
         }
 
         private dynamic GeniusRequest(string path, NameValueCollection parameters = null)
@@ -59,21 +69,30 @@ namespace Beenius
 
         public string getLyrics(string artist, string title, string album)
         {
+            foreach (char delimiter in Delimiters) artist = artist.Split(delimiter)[0].Trim();
             var req = new NameValueCollection();
             req.Add("q", artist + " " + title);
             dynamic searchResults = GeniusRequest("/search", req);
             var matches = searchResults.response.hits;
             if (matches.Count == 0) { return null; }
-            if (matches[0].type != "song") { return null; }
-            string resultArtist = matches[0].result.artist_names;
-            string resultTitle = matches[0].result.title;
 
             var requestedTitle = $"{artist} {title}".ToLower();
-            var foundTitle = $"{resultArtist} {resultTitle}".ToLower();
 
-            if (Util.ComputeDistance(requestedTitle, foundTitle) > AllowedDistance) { return null; }
+            dynamic chosenMatch = null;
+            foreach (var match in matches) {
+                if (match.type != "song") continue;
+                string resultArtist = match.result.primary_artist.name;
+                string resultTitle = match.result.title;
 
-            string songApiPath = matches[0].result.api_path;
+                var foundTitle = $"{resultArtist} {resultTitle}".ToLower();
+
+                if (Util.ComputeDistance(requestedTitle, foundTitle) > AllowedDistance) continue;
+                chosenMatch = match;
+                break;
+            }
+            if (chosenMatch == null) { return null; }
+
+            string songApiPath = chosenMatch.result.api_path;
             dynamic songPage = GeniusRequest(songApiPath);
             dynamic lyricsDom = songPage.response.song.lyrics.dom.children;
             
