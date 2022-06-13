@@ -11,7 +11,7 @@ Get a release and extract two .dll files into MusicBee/Plugins/ directory
 
 
 ### Activation
-Preferences -> Plugins -> Enable Beeniuus.
+Preferences -> Plugins -> Enable Beeniuus.  
 Preferences -> Tags (2) -> Lyrics -> Genius via Beenius.
 
 ### Shoutouts
