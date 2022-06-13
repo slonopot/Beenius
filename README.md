@@ -9,5 +9,10 @@ It's just a lyrics provider.
 ### Installation
 Get a release and extract two .dll files into MusicBee/Plugins/ directory
 
+
+### Activation
+Preferences -> Plugins -> Enable Beeniuus.
+Preferences -> Tags (2) -> Lyrics -> Genius via Beenius.
+
 ### Shoutouts
 https://github.com/toptensoftware/JsonKit
