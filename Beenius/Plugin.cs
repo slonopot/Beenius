@@ -1,11 +1,18 @@
 ﻿using Beenius;
+using NLog;
 using System;
+using System.IO;
 using System.Windows;
 
 namespace MusicBeePlugin
 {
     public partial class Plugin
     {
+        private static Logger Logger;
+
+        public static string configFile = "./Plugins/beenius.conf";
+        public static string logFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"MusicBee\beenius.log");
+
         private MusicBeeApiInterface musicBee;
         private PluginInfo info = new PluginInfo();
         private GeniusClient geniusClient;
@@ -23,7 +30,7 @@ namespace MusicBeePlugin
             info.Type = PluginType.LyricsRetrieval;
             info.VersionMajor = 0;
             info.VersionMinor = 0;
-            info.Revision = 2;
+            info.Revision = 3;
             info.MinInterfaceVersion = 20;
             info.MinApiRevision = 25;
             info.ReceiveNotifications = ReceiveNotificationFlags.StartupOnly;
@@ -31,6 +38,17 @@ namespace MusicBeePlugin
 
             try
             {
+                var config = new NLog.Config.LoggingConfiguration();
+                var logfile = new NLog.Targets.FileTarget()
+                {
+                    FileName = logFile,
+                    Layout = "${date} | ${level} | ${callsite} | ${message}",
+                    DeleteOldFileOnStartup = true
+                };
+                config.AddRuleForAllLevels(logfile);
+                LogManager.Configuration = config;
+                Logger = LogManager.GetCurrentClassLogger();
+
                 geniusClient = new GeniusClient();
             }
             catch (Exception e)
@@ -51,12 +69,18 @@ namespace MusicBeePlugin
 
         public String RetrieveLyrics(String source, String artist, String title, String album, bool preferSynced, String providerName)
         {
-            var lyrics = geniusClient.getLyrics(artist, title, album);
+            Logger.Debug("source={source}, artist={artist}, title={title}, album={album}, preferSynced={preferSynced}, providerName={providerName}", source, artist, title, album, preferSynced, providerName);
+
+            var lyrics = geniusClient.getLyrics(artist, title);
             return lyrics;
         }
 
-        public void ReceiveNotification(String source, NotificationType type) {}
+        public void ReceiveNotification(String source, NotificationType type) { }
 
+        public void SaveSettings() { }
+
+        public bool Configure(IntPtr panelHandle) { return false; } //fixes the popup
+        public void Uninstall() { MessageBox.Show("Just delete the plugin files from the Plugins folder yourself, this plugin is not very sophisticated to handle it itself."); }
 
     }
 }

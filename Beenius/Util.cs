@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace Beenius
 {
     internal class Util
     {
+        private static Logger Logger = LogManager.GetCurrentClassLogger();
+
         public static string ToQueryString(NameValueCollection nvc)
         {
             var array = (
@@ -76,6 +79,22 @@ namespace Beenius
             }
             // Step 7
             return d[n, m];
+        }
+
+        public static bool ValidateResult(string originalArtist, string originalTitle, string foundArtist, string foundTitle, int allowedDistance)
+        {
+            var originalEntry = $"{originalArtist} {originalTitle}".ToLower();
+            var foundEntry = $"{foundArtist} {foundTitle}".ToLower();
+
+            Logger.Info("Comparing {originalEntry} with {foundEntry}", originalEntry, foundEntry);
+
+            if (Util.ComputeDistance(originalEntry, foundEntry) <= allowedDistance)
+            {
+                Logger.Info("It's good");
+                return true;
+            }
+            Logger.Info("It's not good");
+            return false;
         }
     }
 }
