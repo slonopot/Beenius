@@ -86,11 +86,16 @@ namespace Beenius
             string result = search(artist, title);
             if (string.IsNullOrEmpty(result) && Delimiters.Length > 0)
             {
-                foreach (char delimiter in Delimiters) artist = artist.Split(delimiter)[0].Trim();
+                var editedArtist = artist;
 
-                Logger.Info("Nothing found, attempting to search for {aritst} - {title}", artist, title);
+                foreach (char delimiter in Delimiters) editedArtist = editedArtist.Split(delimiter)[0].Trim();
 
-                result = search(artist, title);
+                if (editedArtist != artist)
+                {
+                    Logger.Info("Nothing found, attempting to search for {aritst} - {title}", artist, title);
+
+                    result = search(artist, title);
+                }
             }
             if (string.IsNullOrEmpty(result)) { Logger.Info("Nothing found at all"); }
             else { Logger.Info("Got a hit"); }

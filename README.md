@@ -6,7 +6,7 @@ It's just a lyrics provider.
 Using Genius API instead of webpage parsing.
 
 ### Installation
-Get a release and extract two .dll files into `C:\Program Files (x86)\MusicBee\Plugins\` directory (or whatever you've installed your MusicBee to).
+Get a release and extract all .dll files into `C:\Program Files (x86)\MusicBee\Plugins\` directory (or whatever you've installed your MusicBee to).
 
 ### Activation
 Preferences -> Plugins -> Enable Beeniuus.  
