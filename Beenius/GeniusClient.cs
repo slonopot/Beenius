@@ -92,9 +92,9 @@ namespace Beenius
 
                 if (editedArtist != artist)
                 {
-                    Logger.Info("Nothing found, attempting to search for {aritst} - {title}", artist, title);
+                    Logger.Info("Nothing found, attempting to search for {aritst} - {title}", editedArtist, title);
 
-                    result = search(artist, title);
+                    result = search(editedArtist, title);
                 }
             }
             if (string.IsNullOrEmpty(result)) { Logger.Info("Nothing found at all"); }
