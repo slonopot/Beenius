@@ -102,7 +102,7 @@ namespace Beenius
             return result;
         }
 
-        private string search(string artist, string title)
+        private string search(string artist, string title, bool parseDom = true)
         {
             Logger.Debug("artist={artist}, title={title}", artist, title);
 
@@ -156,10 +156,26 @@ namespace Beenius
             }
 
             string songApiPath = chosenMatch.result.api_path;
-            dynamic songPage = GeniusRequest(songApiPath);
-            dynamic lyricsDom = songPage.response.song.lyrics.dom.children;
 
-            string result = parseLyricsDom(lyricsDom);
+            string result = string.Empty;
+            
+            if (parseDom)
+            {
+                dynamic songPage = GeniusRequest(songApiPath);
+                
+                dynamic lyricsDom = songPage.response.song.lyrics.dom.children;
+
+                result = parseLyricsDom(lyricsDom);
+            }
+            else
+            {
+                req = new NameValueCollection();
+                req.Add("text_format", "plain");
+
+                dynamic songPage = GeniusRequest(songApiPath, req);
+
+                result = songPage.response.song.lyrics.plain;
+            }
 
             Logger.Info("Found lyrics");
 
