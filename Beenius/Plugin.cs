@@ -35,7 +35,6 @@ namespace MusicBeePlugin
             info.MinApiRevision = 25;
             info.ReceiveNotifications = ReceiveNotificationFlags.StartupOnly;
             info.ConfigurationPanelHeight = 20;
-
             try
             {
                 var config = new NLog.Config.LoggingConfiguration();

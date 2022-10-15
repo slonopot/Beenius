@@ -7,7 +7,7 @@ namespace Beenius_Tester
         static void Main(string[] args)
         {
             GeniusClient client = new GeniusClient();
-            client.getLyrics("Denzel Curry & 6LACK & Rico Nasty & JID & Jasiah & Powers Pleasant & Kitty Ca$h", "Ain't No Way");
+            client.getLyrics("GERM", "SORRY MOM I WAS FRIED");
         }
     }
 }

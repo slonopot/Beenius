@@ -22,6 +22,7 @@ namespace Beenius
         private int AllowedDistance = 5; //a number of edits needed to get from one title to another
         private char[] Delimiters = { }; //delimiters to remove additional authors from the string
         private int MaxResults = 1; //maximum search results to analyze
+        private bool AddLyricsSource = false;
         public GeniusClient()
         {
             client.DefaultRequestHeaders.Remove("User-Agent");
@@ -40,8 +41,10 @@ namespace Beenius
                     Token = config.token;
                 if (Util.PropertyExists(config, "maxResults"))
                     MaxResults = (int)config.maxResults;
+                if (Util.PropertyExists(config, "addLyricsSource"))
+                    AddLyricsSource = (bool)config.addLyricsSource;
 
-                Logger.Info("Configuration file was used: allowedDistance={allowedDistance}, delimiters={delimiters}, token={token}, maxResults={maxResults}", AllowedDistance, Delimiters, Token, MaxResults);
+                Logger.Info("Configuration file was used: allowedDistance={allowedDistance}, delimiters={delimiters}, token={token}, maxResults={maxResults}, addLyricsSource={addLyricsSource}", AllowedDistance, Delimiters, Token, MaxResults, AddLyricsSource);
             }
             else { Logger.Info("No configuration file was provided, defaults were used"); }
         }
@@ -167,7 +170,7 @@ namespace Beenius
 
                 result = parseLyricsDom(lyricsDom);
             }
-            else
+            else //Won't use plain text since Genius returns it with a space before every line. Also I've already done DOM parsing so why bother.
             {
                 req = new NameValueCollection();
                 req.Add("text_format", "plain");
@@ -178,6 +181,9 @@ namespace Beenius
             }
 
             Logger.Info("Found lyrics");
+
+            if (AddLyricsSource)
+                result = "Source: Genius via Beenius\n\n" + result;
 
             return result;
         }
