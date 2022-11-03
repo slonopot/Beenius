@@ -13,9 +13,11 @@ namespace Beenius
 {
     public class GeniusClient
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger();
+        private static Logger Logger = LogManager.GetLogger("Beenius");
 
         private HttpClient client = new HttpClient();
+
+        private string LyricsProviderName;
 
         private string Token = "ZTejoT_ojOEasIkT9WrMBhBQOz6eYKK5QULCMECmOhvwqjRZ6WbpamFe3geHnvp3"; //anonymous Android app token
         private string ApiURL = "https://api.genius.com";
@@ -23,8 +25,10 @@ namespace Beenius
         private char[] Delimiters = { }; //delimiters to remove additional authors from the string
         private int MaxResults = 1; //maximum search results to analyze
         private bool AddLyricsSource = false;
-        public GeniusClient()
+        public GeniusClient(string lyricsProviderName = null)
         {
+            LyricsProviderName = lyricsProviderName;
+
             client.DefaultRequestHeaders.Remove("User-Agent");
             client.DefaultRequestHeaders.Add("User-Agent", "okhttp/4.9.1");
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
@@ -183,7 +187,7 @@ namespace Beenius
             Logger.Info("Found lyrics");
 
             if (AddLyricsSource)
-                result = "Source: Genius via Beenius\n\n" + result;
+                result = $"Source: {LyricsProviderName}\n\n" + result;
 
             return result;
         }

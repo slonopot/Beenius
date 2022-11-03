@@ -30,25 +30,33 @@ namespace MusicBeePlugin
             info.Type = PluginType.LyricsRetrieval;
             info.VersionMajor = 1;
             info.VersionMinor = 3;
-            info.Revision = 2;
+            info.Revision = 4;
             info.MinInterfaceVersion = 20;
             info.MinApiRevision = 25;
             info.ReceiveNotifications = ReceiveNotificationFlags.StartupOnly;
             info.ConfigurationPanelHeight = 20;
             try
             {
-                var config = new NLog.Config.LoggingConfiguration();
                 var logfile = new NLog.Targets.FileTarget()
                 {
                     FileName = logFile,
                     Layout = "${date} | ${level} | ${callsite} | ${message}",
-                    DeleteOldFileOnStartup = true
+                    DeleteOldFileOnStartup = true,
+                    Name = "Beenius"
                 };
-                config.AddRuleForAllLevels(logfile);
-                LogManager.Configuration = config;
+
+                if (LogManager.Configuration == null)
+                {
+                    var config = new NLog.Config.LoggingConfiguration();
+                    config.AddRuleForAllLevels(logfile, "Beenius");
+                    LogManager.Configuration = config;
+                }
+                else 
+                    LogManager.Configuration.AddRuleForAllLevels(logfile, "Beenius");
+
                 Logger = LogManager.GetCurrentClassLogger();
 
-                geniusClient = new GeniusClient();
+                geniusClient = new GeniusClient(BeeniusLyricsProvider);
             }
             catch (Exception e)
             {
@@ -69,6 +77,8 @@ namespace MusicBeePlugin
         public String RetrieveLyrics(String source, String artist, String title, String album, bool preferSynced, String providerName)
         {
             Logger.Debug("source={source}, artist={artist}, title={title}, album={album}, preferSynced={preferSynced}, providerName={providerName}", source, artist, title, album, preferSynced, providerName);
+
+            if (providerName != BeeniusLyricsProvider) return null;
 
             var lyrics = geniusClient.getLyrics(artist, title);
             return lyrics;

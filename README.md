@@ -1,5 +1,4 @@
 ## Beenius - Genius for MusicBee
-
 It's just a lyrics provider.
 
 ### Features
@@ -9,7 +8,7 @@ Using Genius API instead of webpage parsing.
 Get a release and extract all .dll files into `C:\Program Files (x86)\MusicBee\Plugins\` directory (or whatever you've installed your MusicBee to).
 
 ### Activation
-Preferences -> Plugins -> Enable Beeniuus.  
+Preferences -> Plugins -> Enable Beenius.  
 Preferences -> Tags (2) -> Lyrics -> Genius via Beenius.
 
 ### Configuration
@@ -23,7 +22,7 @@ Create beenius.conf in the Plugins directory and use this template:
         "addLyricsSource": false
     }
 
-beenius.conf includes four options. You are allowed to use only ones you need, just omit the line and don't forget about commas in JSON.
+beenius.conf includes five options. You are allowed to use only ones you need, just omit the line and don't forget about commas in JSON.
 1. Configurable title distance for minor differences. Defaults to 5. This means that a present N-character difference in search results won't affect the filtering and be considered a hit.
 2. Configurable artist delimiters ("A & B, C" => "A"). Defaults to none. Useful when you have several artists for the track but Genius includes only the main one. For example, track `$uicideboy$ & JGrxxn & Black Smurf & Ramirez` will be stripped down to `$uicideboy$` with current configuration and will hit [this page](https://genius.com/Uicideboy-grayscale-lyrics).
 3. Configurable search results limit. Defaults to 1. Change if the songs you are searching for does not show up at the first place (not including other types of results) in the search.
