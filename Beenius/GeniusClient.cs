@@ -25,6 +25,7 @@ namespace Beenius
         private char[] Delimiters = { }; //delimiters to remove additional authors from the string
         private int MaxResults = 1; //maximum search results to analyze
         private bool AddLyricsSource = false;
+        private bool TrimTitle = false;
         public GeniusClient(string lyricsProviderName = null)
         {
             LyricsProviderName = lyricsProviderName;
@@ -47,8 +48,10 @@ namespace Beenius
                     MaxResults = (int)config.maxResults;
                 if (Util.PropertyExists(config, "addLyricsSource"))
                     AddLyricsSource = (bool)config.addLyricsSource;
+                if (Util.PropertyExists(config, "trimTitle"))
+                    TrimTitle = (bool)config.trimTitle;
 
-                Logger.Info("Configuration file was used: allowedDistance={allowedDistance}, delimiters={delimiters}, token={token}, maxResults={maxResults}, addLyricsSource={addLyricsSource}", AllowedDistance, Delimiters, Token, MaxResults, AddLyricsSource);
+                Logger.Info("Configuration file was used: allowedDistance={allowedDistance}, delimiters={delimiters}, token={token}, maxResults={maxResults}, addLyricsSource={addLyricsSource}, trimTitle={trimTitle}", AllowedDistance, Delimiters, Token, MaxResults, AddLyricsSource, TrimTitle);
             }
             else { Logger.Info("No configuration file was provided, defaults were used"); }
         }
@@ -88,6 +91,11 @@ namespace Beenius
 
         public string getLyrics(string artist, string title)
         {
+            artist = artist.Trim();
+            title = title.Trim();
+
+            if (TrimTitle) { title = Util.Trim(title); }
+
             Logger.Info("Attempting to search for {aritst} - {title}", artist, title);
 
             string result = search(artist, title);

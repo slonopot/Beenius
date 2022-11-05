@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Beenius
@@ -95,6 +96,15 @@ namespace Beenius
             }
             Logger.Info("It's not good");
             return false;
+        }
+
+        public static string Trim(string title)
+        {
+            title = Regex.Replace(title, @"\[.*\]", "");
+            title = Regex.Replace(title, @"\(.*\)", "");
+            title = Regex.Replace(title, @"\<.*\>", "");
+            title = Regex.Replace(title, @"\{.*\}", "");
+            return title.Trim();
         }
     }
 }
