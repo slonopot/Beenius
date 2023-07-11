@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Topten.JsonKit;
 
@@ -26,6 +27,7 @@ namespace Beenius
         private int MaxResults = 1; //maximum search results to analyze
         private bool AddLyricsSource = false;
         private bool TrimTitle = false;
+        private bool RemoveTags = false;
         public GeniusClient(string lyricsProviderName = null)
         {
             LyricsProviderName = lyricsProviderName;
@@ -50,6 +52,8 @@ namespace Beenius
                     AddLyricsSource = (bool)config.addLyricsSource;
                 if (Util.PropertyExists(config, "trimTitle"))
                     TrimTitle = (bool)config.trimTitle;
+                if (Util.PropertyExists(config, "removeTags"))
+                    RemoveTags = (bool)config.removeTags;
 
                 Logger.Info("Configuration file was used: allowedDistance={allowedDistance}, delimiters={delimiters}, token={token}, maxResults={maxResults}, addLyricsSource={addLyricsSource}, trimTitle={trimTitle}", AllowedDistance, Delimiters, Token, MaxResults, AddLyricsSource, TrimTitle);
             }
@@ -196,6 +200,9 @@ namespace Beenius
 
             if (AddLyricsSource)
                 result = $"Source: {LyricsProviderName}\n\n" + result;
+
+            if (RemoveTags)
+                result = Regex.Replace(result, @"\[.*\]\s*?\r?\n", string.Empty);
 
             return result;
         }

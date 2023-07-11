@@ -20,7 +20,8 @@ Create beenius.conf in the Plugins directory and use this template:
         "maxResults": 1,
         "token": "ZTejoT_ojOEasIkT9WrMBhBQOz6eYKK5QULCMECmOhvwqjRZ6WbpamFe3geHnvp3",
         "addLyricsSource": false,
-        "trimTitle": false
+        "trimTitle": false,
+        "removeTags": false
     }
 
 beenius.conf includes several options. You are allowed to use only ones you need, just omit the line and don't forget about commas in JSON.
@@ -30,7 +31,7 @@ beenius.conf includes several options. You are allowed to use only ones you need
 4. Configurable token. Plugin is using an anonymous Android app token which might be eventually revoked so you're able to replace it with your personal one.
 5. Configurable lyrics source marker. Plugin will append "Source: Genius via Beenius" to the lyrics' beginning if enabled.
 6. Configurable title trim. This option will remove all content in brackets from the title. By default MusicBee removes only features in the round brackets, this option will remove all content in `[]`, `{}`, `<>` and `()`.
-
+7. Configurable tag removal. This option will remove all [Intro], [Verse] and alike tags.
 Restart MusicBee to apply changes.
 
 ### Logic
