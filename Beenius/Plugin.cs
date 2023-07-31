@@ -10,8 +10,9 @@ namespace MusicBeePlugin
     {
         private static Logger Logger;
 
-        public static string configFile = "./Plugins/beenius.conf";
+        public static string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"MusicBee\Plugins\beenius.conf");
         public static string logFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"MusicBee\beenius.log");
+        public static string name = "Beenius";
 
         private MusicBeeApiInterface musicBee;
         private PluginInfo info = new PluginInfo();
@@ -30,31 +31,38 @@ namespace MusicBeePlugin
             info.Type = PluginType.LyricsRetrieval;
             info.VersionMajor = 1;
             info.VersionMinor = 3;
-            info.Revision = 6;
+            info.Revision = 7;
             info.MinInterfaceVersion = 20;
             info.MinApiRevision = 25;
             info.ReceiveNotifications = ReceiveNotificationFlags.StartupOnly;
             info.ConfigurationPanelHeight = 20;
+
             try
             {
-                var logfile = new NLog.Targets.FileTarget()
+                var target = new NLog.Targets.FileTarget(name)
                 {
                     FileName = logFile,
                     Layout = "${date} | ${level} | ${callsite} | ${message}",
                     DeleteOldFileOnStartup = true,
-                    Name = "Beenius"
+                    Name = name
                 };
-
                 if (LogManager.Configuration == null)
                 {
                     var config = new NLog.Config.LoggingConfiguration();
-                    config.AddRuleForAllLevels(logfile, "Beenius");
+                    config.AddTarget(target);
+                    config.AddRuleForAllLevels(target, name);
                     LogManager.Configuration = config;
-                }
-                else 
-                    LogManager.Configuration.AddRuleForAllLevels(logfile, "Beenius");
 
-                Logger = LogManager.GetCurrentClassLogger();
+                }
+                else
+                {
+                    LogManager.Configuration.AddTarget(target);
+                    LogManager.Configuration.AddRuleForAllLevels(target, name);
+                }
+
+                LogManager.ReconfigExistingLoggers();
+
+                Logger = LogManager.GetLogger(name);
 
                 geniusClient = new GeniusClient(BeeniusLyricsProvider);
             }

@@ -14,7 +14,7 @@ namespace Beenius
 {
     public class GeniusClient
     {
-        private static Logger Logger = LogManager.GetLogger("Beenius");
+        private static Logger Logger = LogManager.GetLogger(Plugin.name);
 
         private HttpClient client = new HttpClient();
 
