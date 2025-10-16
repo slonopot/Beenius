@@ -54,6 +54,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="TagLibSharp, Version=2.3.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
+      <HintPath>..\packages\TagLibSharp.2.3.0\lib\net462\TagLibSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Topten.JsonKit, Version=1.1.135.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Topten.JsonKit.1.1.135\lib\net46\Topten.JsonKit.dll</HintPath>
     </Reference>

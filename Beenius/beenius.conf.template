@@ -2,7 +2,6 @@
     "allowedDistance": 5,
     "delimiters": [ "&", ";", "," ],
     "maxResults": 1,
-    "token": "ZTejoT_ojOEasIkT9WrMBhBQOz6eYKK5QULCMECmOhvwqjRZ6WbpamFe3geHnvp3",
     "addLyricsSource": false,
     "trimTitle": false,
     "removeTags":  false

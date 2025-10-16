@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Topten.JsonKit;
@@ -20,7 +21,7 @@ namespace Beenius
 
         private string LyricsProviderName;
 
-        private string Token = "ZTejoT_ojOEasIkT9WrMBhBQOz6eYKK5QULCMECmOhvwqjRZ6WbpamFe3geHnvp3"; //anonymous Android app token
+        private string Token = Encoding.UTF8.GetString(Convert.FromBase64String("WlRlam9UX29qT0Vhc0lrVDlXck1CaEJRT3o2ZVlLSzVRVUxDTUVDbU9odndxalJaNldicGFtRmUzZ2VIbnZwMw==")); //anonymous Android app token
         private string ApiURL = "https://api.genius.com";
         private int AllowedDistance = 5; //a number of edits needed to get from one title to another
         private char[] Delimiters = { }; //delimiters to remove additional authors from the string
@@ -80,6 +81,12 @@ namespace Beenius
             {
                 throw;
             }
+
+            if (response != null && !response.IsSuccessStatusCode)
+            {
+                Logger.Info("Seems like a ban, you might want to change your IP (restart router, toggle airplane mode): HTTP code {codeInt} {code}", (int)response.StatusCode, response.StatusCode.ToString());
+            }
+
             dynamic result = null;
             try
             {
@@ -202,7 +209,7 @@ namespace Beenius
                 result = $"Source: {LyricsProviderName}\n\n" + result;
 
             if (RemoveTags)
-                result = Regex.Replace(result, @"\[.*\]\s*?\r?\n", string.Empty);
+                result = Regex.Replace(result, @"\[.*?\](\s*?\r?\n)+", string.Empty);
 
             return result;
         }

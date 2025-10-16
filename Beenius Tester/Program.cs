@@ -7,7 +7,7 @@ namespace Beenius_Tester
         static void Main(string[] args)
         {
             GeniusClient client = new GeniusClient("");
-            client.getLyrics("GERM", "SORRY MOM I WAS FRIED [YEP]");
+            var result = client.getLyrics("​​Chetta", "Fortykay");
         }
     }
 }

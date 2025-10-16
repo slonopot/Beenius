@@ -18,7 +18,6 @@ Create beenius.conf in the Plugins directory and use this template:
         "allowedDistance": 5,
         "delimiters": ["&", ";", ","],
         "maxResults": 1,
-        "token": "ZTejoT_ojOEasIkT9WrMBhBQOz6eYKK5QULCMECmOhvwqjRZ6WbpamFe3geHnvp3",
         "addLyricsSource": false,
         "trimTitle": false,
         "removeTags": false
@@ -28,10 +27,9 @@ beenius.conf includes several options. You are allowed to use only ones you need
 1. Configurable title distance for minor differences. Defaults to 5. This means that a present N-character difference in search results won't affect the filtering and be considered a hit.
 2. Configurable artist delimiters ("A & B, C" => "A"). Defaults to none. Useful when you have several artists for the track but Genius includes only the main one. For example, track `$uicideboy$ & JGrxxn & Black Smurf & Ramirez` will be stripped down to `$uicideboy$` with current configuration and will hit [this page](https://genius.com/Uicideboy-grayscale-lyrics).
 3. Configurable search results limit. Defaults to 1. Change if the songs you are searching for does not show up at the first place (not including other types of results) in the search.
-4. Configurable token. Plugin is using an anonymous Android app token which might be eventually revoked so you're able to replace it with your personal one.
-5. Configurable lyrics source marker. Plugin will append "Source: Genius via Beenius" to the lyrics' beginning if enabled.
-6. Configurable title trim. This option will remove all content in brackets from the title. By default MusicBee removes only features in the round brackets, this option will remove all content in `[]`, `{}`, `<>` and `()`.
-7. Configurable tag removal. This option will remove all [Intro], [Verse] and alike tags.
+4. Configurable lyrics source marker. Plugin will append "Source: Genius via Beenius" to the lyrics' beginning if enabled.
+5. Configurable title trim. This option will remove all content in brackets from the title. By default MusicBee removes only features in the round brackets, this option will remove all content in `[]`, `{}`, `<>` and `()`.
+6. Configurable tag removal. This option will remove all [Intro], [Verse] and alike tags.
 Restart MusicBee to apply changes.
 
 ### Logic

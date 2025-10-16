@@ -10,8 +10,8 @@ namespace MusicBeePlugin
     {
         private static Logger Logger;
 
-        public static string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"MusicBee\Plugins\beenius.conf");
-        public static string logFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"MusicBee\beenius.log");
+        public static string configFile;
+        public static string logFile;
         public static string name = "Beenius";
 
         private MusicBeeApiInterface musicBee;
@@ -23,6 +23,9 @@ namespace MusicBeePlugin
             musicBee = new MusicBeeApiInterface();
             musicBee.Initialise(apiPtr);
 
+            configFile = Path.Combine(musicBee.Setting_GetPersistentStoragePath(), "beenius.conf");
+            logFile = Path.Combine(musicBee.Setting_GetPersistentStoragePath(), @"beenius.log");
+
             info.PluginInfoVersion = PluginInfoVersion;
             info.Name = "Beenius";
             info.Description = "Genius support for MusicBee";
@@ -30,8 +33,8 @@ namespace MusicBeePlugin
             info.TargetApplication = "MusicBee";
             info.Type = PluginType.LyricsRetrieval;
             info.VersionMajor = 1;
-            info.VersionMinor = 3;
-            info.Revision = 7;
+            info.VersionMinor = 4;
+            info.Revision = 0;
             info.MinInterfaceVersion = 20;
             info.MinApiRevision = 25;
             info.ReceiveNotifications = ReceiveNotificationFlags.StartupOnly;
@@ -82,14 +85,44 @@ namespace MusicBeePlugin
             return new string[] { BeeniusLyricsProvider };
         }
 
+        private (string, string, string, string) TryGetFileMetadata(String source)
+        {
+            var tfile = TagLib.File.Create(source);
+            string title = tfile.Tag.Title;
+            string artist = String.Join(" & ", tfile.Tag.Performers);
+            string albumArtist = null;
+            if (tfile.Tag.AlbumArtists.Length > 0)
+                albumArtist = String.Join(" & ", tfile.Tag.AlbumArtists);
+            string album = tfile.Tag.Album;
+            Logger.Debug("Extracted metadata from {source}: artist={artist}, albumArtist={albumArtist}, title={title}, album={album}", source, artist, albumArtist, title, album);
+            return (artist, albumArtist, title, album);
+        }
+
         public String RetrieveLyrics(String source, String artist, String title, String album, bool preferSynced, String providerName)
         {
             Logger.Debug("source={source}, artist={artist}, title={title}, album={album}, preferSynced={preferSynced}, providerName={providerName}", source, artist, title, album, preferSynced, providerName);
 
             if (providerName != BeeniusLyricsProvider) return null;
 
-            var lyrics = geniusClient.getLyrics(artist, title);
-            return lyrics;
+            string albumArtist = null;
+
+            if (source != string.Empty)
+            {
+                try { (artist, albumArtist, title, album) = TryGetFileMetadata(source); }
+                catch { Logger.Debug("Failed to extract metadata from {source}", source); }
+            }
+            try
+            {
+                var lyrics = geniusClient.getLyrics(artist, title);
+                if (string.IsNullOrEmpty(lyrics) && !string.IsNullOrEmpty(albumArtist) && artist != albumArtist) 
+                    lyrics = geniusClient.getLyrics(albumArtist, title);
+                return lyrics;
+            }
+            catch (Exception ex)
+            {
+                Logger.Debug(ex);
+                return null;
+            }
         }
 
         public void ReceiveNotification(String source, NotificationType type) { }
