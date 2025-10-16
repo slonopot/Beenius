@@ -12,7 +12,7 @@ Preferences -> Plugins -> Enable Beenius.
 Preferences -> Tags (2) -> Lyrics -> Genius via Beenius.
 
 ### Configuration
-Create beenius.conf in the Plugins directory and use this template:
+Create beenius.conf in the `%APPDATA%\MusicBee\` directory and use this template:
 
     {
         "allowedDistance": 5,
@@ -47,3 +47,5 @@ You can find log at `%APPDATA%\MusicBee\beenius.log`.
 https://github.com/toptensoftware/JsonKit
 
 https://nlog-project.org/
+
+https://github.com/mono/taglib-sharp
